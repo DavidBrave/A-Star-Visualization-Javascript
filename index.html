@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>A Star JavaScript Pathfinding Demo</title>
+    <meta
+        name="description"
+        content="An interactive demo and explanation of how the A Star pathfinding algorithm works.">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="prism.css">
+</head>
+<body>
+    <div class="wrapper">
+        <h1>A* Pathfinding Demo</h1>
+        
+        <br>
+
+        <div class="map-legend-container">
+
+            <div class="legend-wrapper">
+                <br> <br>
+                <h3>Legend</h3>
+                <br>
+                <ul class="legend break">
+                    <li class="open">Open</li>
+                    <li class="closed">Closed</li>
+                    <li class="begin">Begin</li>
+                    <li class="end">End</li>
+                    <li class="set-opened">Opened Set</li>
+                    <li class="set-closed">Closed Set</li>
+                    <li class="path">Path</li>
+                </ul>
+
+                <br>
+
+                <div class="button-wrapper">
+                    <button class="action-button" id="calculate">Find Path</button>
+                    <button class="action-button" id="visualize">Visualize Path</button>
+                    <button class="action-button" id="set-begin">Set Start</button>
+                    <button class="action-button" id="set-end">Set End</button>
+                    <button class="action-button" id="erase">Clear Map</button>
+                </div>
+            </div>
+
+
+            <table class="map break alt">
+                <tr class="map-row">
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile" data-status="end"></td>
+                </tr>
+                <tr class="map-row">
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                </tr>
+                <tr class="map-row">
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                </tr>
+                <tr class="map-row">
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                </tr>
+                <tr class="map-row">
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                </tr>
+                <tr class="map-row">
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                </tr>
+                <tr class="map-row">
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                </tr>
+                <tr class="map-row">
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile" data-status="closed"></td>
+                    <td class="map-tile" data-status="closed"></td>
+                    <td class="map-tile" data-status="closed"></td>
+                    <td class="map-tile" data-status="closed"></td>
+                    <td class="map-tile" data-status="closed"></td>
+                    <td class="map-tile" data-status="closed"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                </tr>
+                <tr class="map-row">
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile" data-status="closed"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                </tr>
+                <tr class="map-row">
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile" data-status="closed"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                </tr>
+                <tr class="map-row">
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile" data-status="closed"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                </tr>
+                <tr class="map-row">
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile" data-status="closed"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                </tr>
+                <tr class="map-row">
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile" data-status="closed"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                </tr>
+                <tr class="map-row">
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                </tr>
+                <tr class="map-row">
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                </tr>
+                <tr class="map-row">
+                    <td class="map-tile" data-status="begin"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                    <td class="map-tile"></td>
+                </tr>
+            </table>
+
+
+        </div>
+
+        
+
+        
+
+        
+
+        <br> <br>
+        <h2>Tile Stats Overview</h2>
+        <dl>
+            <dt>F = Calculated Total</dt>
+            <dd>Sum of the heuristic (H) and current step cost (G)</dd>
+
+            <dt>G = Step Cost</dt>
+            <dd>Total number of steps required to walk here from the start tile.</dd>
+
+            <dt>H = Heuristic Estimate</dt>
+            <dd>Heuristic uses Manhattan distance. Measures distance from current tile
+                to the goal.</dd>
+
+        </dl>
+
+        <span class="stats-preview break">
+            <span class="f">F</span>
+            <span class="g">G</span>
+            <span class="h">H</span>
+        </span>
+
+
+    <!-- Libs -->
+    <script type="text/javascript" src="scripts/libs/jquery-2.0.0.js"></script>
+    <script type="text/javascript" src="scripts/libs/prism.js"></script>
+
+    <!-- Models -->
+    <script type="text/javascript" src="scripts/models/step.js"></script>
+    <script type="text/javascript" src="scripts/models/tile.js"></script>
+
+    <!-- Controllers -->
+    <script type="text/javascript" src="scripts/controllers/visual.js"></script>
+    <script type="text/javascript" src="scripts/controllers/map.js"></script>
+    <script type="text/javascript" src="scripts/controllers/pathfinder.js"></script>
+
+    <!-- Execution logic -->
+    <script type="text/javascript" src="scripts/main.js"></script>
+</body>
+</html>
